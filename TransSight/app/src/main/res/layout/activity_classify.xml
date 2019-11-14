@@ -7,7 +7,7 @@
     tools:context=".Classify">
 
 
-    <android.support.constraint.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -48,24 +48,6 @@
             app:layout_constraintTop_toBottomOf="@+id/selected_image"
             app:layout_constraintVertical_bias="0.149" />
 
-        <Button
-            android:id="@+id/back_button"
-            android:layout_width="wrap_content"
-            android:layout_height="45dp"
-            android:layout_below="@id/classify_image"
-            android:layout_centerHorizontal="true"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginBottom="8dp"
-            android:text="Back"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.498"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/classify_image"
-            app:layout_constraintVertical_bias="0.129" />
-
         <TextView
             android:id="@+id/label1"
             android:layout_width="wrap_content"
@@ -79,9 +61,38 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.469"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/back_button"
-            app:layout_constraintVertical_bias="0.359" />
-    </android.support.constraint.ConstraintLayout>
+            app:layout_constraintTop_toBottomOf="@+id/classify_image"
+            app:layout_constraintVertical_bias="0.16000003" />
+
+        <Button
+            android:id="@+id/translate_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            android:text="Translate"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/label1"
+            app:layout_constraintVertical_bias="0.13" />
+
+        <TextView
+            android:id="@+id/translate_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="26dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="32dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/translate_button"
+            app:layout_constraintVertical_bias="0.3" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 
 

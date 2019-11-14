@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "399968646124",
+    "firebase_url": "https://transsight-c2a65.firebaseio.com",
+    "project_id": "transsight-c2a65",
+    "storage_bucket": "transsight-c2a65.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:399968646124:android:73ca0ee55487ff9186c6c9",
+        "android_client_info": {
+          "package_name": "com.example.transsight"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "399968646124-q17bghgfb0keh6pnm9ah3msn2vb41u8g.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyClc0_Wp29HDNHC-h6IrFc24o84lUEPxgQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "399968646124-q17bghgfb0keh6pnm9ah3msn2vb41u8g.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

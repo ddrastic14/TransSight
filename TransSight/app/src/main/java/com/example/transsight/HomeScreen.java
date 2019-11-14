@@ -2,31 +2,57 @@ package com.example.transsight;
 
 import android.Manifest;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Build;
+import android.os.StrictMode;
 import android.provider.MediaStore;
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
+
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.MultiAutoCompleteTextView;
 import android.widget.Toast;
 
+import com.google.auth.oauth2.GoogleCredentials;
+import com.google.cloud.translate.TranslateOptions;
+import com.google.cloud.translate.Translation;
 import com.soundcloud.android.crop.Crop;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 
 
-public class Model extends AppCompatActivity {
+public class HomeScreen extends AppCompatActivity {
 
     // button for each available classifier
-    private Button identify_objects;
-    private Button identify_pictures;
+    private ImageButton transight_button;
+    //Original Text
+    private String originalText;
+    //Translated Text
+    private String translatedText;
+
+    private EditText english_text;
+
+    private MultiAutoCompleteTextView translated_text;
+
+    private Button translate_button;
+
+    private boolean connected;
+
+    com.google.cloud.translate.Translate translate;
 
     // for permission requests
     public static final int REQUEST_PERMISSION = 300;
@@ -43,11 +69,10 @@ public class Model extends AppCompatActivity {
     //boolean value dictating if chosen model is quantized version or not.
     private boolean quant;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_model);
+        setContentView(R.layout.activity_home_screen);
 
         // request permission to use the camera on the user's phone
         if (ActivityCompat.checkSelfPermission(this.getApplicationContext(), android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED){
@@ -69,8 +94,8 @@ public class Model extends AppCompatActivity {
         }
 
         // on click for inception float model
-        identify_objects = (Button)findViewById(R.id.inception_float);
-        identify_objects.setOnClickListener(new View.OnClickListener() {
+        transight_button = (ImageButton)findViewById(R.id.transight_button);
+        transight_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 // filename in assets
@@ -82,7 +107,71 @@ public class Model extends AppCompatActivity {
             }
         });
 
+        translate_button = (Button)findViewById(R.id.translate_button);
+        english_text = (EditText)findViewById(R.id.english_text);
+        translated_text = (MultiAutoCompleteTextView)findViewById(R.id.translated_text);
+        translate_button.setOnClickListener(new View.OnClickListener() {
+             @Override
+             public void onClick(View view) {
+                 if (checkInternetConnection()) {
 
+                     //If there is internet connection, get translate service and start translation:
+                     getTranslateService();
+                     translate();
+
+                 } else {
+
+                     //If not, display "no connection" warning:
+                     translated_text.setText(getResources().getString(R.string.no_connection));
+                 }
+             }
+         });
+
+
+    }
+
+    public void getTranslateService() {
+
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
+
+        try (InputStream is = getResources().openRawResource(R.raw.credentials)) {
+
+            //Get credentials:
+            final GoogleCredentials myCredentials = GoogleCredentials.fromStream(is);
+
+            //Set credentials and get translate service:
+            TranslateOptions translateOptions = TranslateOptions.newBuilder().setCredentials(myCredentials).build();
+            translate = translateOptions.getService();
+
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+
+        }
+    }
+
+    public void translate() {
+
+        //Get input text to be translated:
+        originalText = english_text.getText().toString();
+        Translation translation = translate.translate(originalText, com.google.cloud.translate.Translate.TranslateOption.targetLanguage("es"), com.google.cloud.translate.Translate.TranslateOption.model("base"));
+        translatedText = translation.getTranslatedText();
+
+        //Translated text and original text are set to TextViews:
+        translated_text.setText(translatedText);
+
+    }
+
+    public boolean checkInternetConnection() {
+
+        //Check internet connection:
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        //Means that we are connected to a network (mobile or wi-fi)
+        connected = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ||
+                connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState() == NetworkInfo.State.CONNECTED;
+
+        return connected;
     }
 
     // opens camera for user
@@ -122,7 +211,7 @@ public class Model extends AppCompatActivity {
                 Uri source_uri = imageUri;
                 Uri dest_uri = Uri.fromFile(new File(getCacheDir(), "cropped"));
                 // need to crop it to square image as CNN's always required square input
-                Crop.of(source_uri, dest_uri).asSquare().start(Model.this);
+                Crop.of(source_uri, dest_uri).asSquare().start(HomeScreen.this);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -131,7 +220,7 @@ public class Model extends AppCompatActivity {
         // if cropping acitivty is finished, get the resulting cropped image uri and send it to 'Classify' activity
         else if(requestCode == Crop.REQUEST_CROP && resultCode == RESULT_OK){
             imageUri = Crop.getOutput(data);
-            Intent i = new Intent(Model.this, Classify.class);
+            Intent i = new Intent(HomeScreen.this, Classify.class);
             // put image data in extras to send
             i.putExtra("resID_uri", imageUri);
             // put filename in extras

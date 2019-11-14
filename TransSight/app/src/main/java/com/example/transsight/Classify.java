@@ -1,25 +1,33 @@
 package com.example.transsight;
 
-import android.content.Intent;
+import android.content.Context;
 import android.content.res.AssetFileDescriptor;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.graphics.drawable.BitmapDrawable;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
-import android.os.SystemClock;
+import android.os.StrictMode;
 import android.provider.MediaStore;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.auth.oauth2.GoogleCredentials;
+import com.google.cloud.translate.Translate;
+import com.google.cloud.translate.TranslateOptions;
+import com.google.cloud.translate.Translation;
+
 import org.tensorflow.lite.Interpreter;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -60,6 +68,7 @@ public class Classify extends AppCompatActivity {
     // selected classifier information received from extras
     private String chosen;
     private boolean quant;
+    private boolean connected;
 
     // input image dimensions for the Inception Model
     private int DIM_IMG_SIZE_X = 299;
@@ -69,11 +78,20 @@ public class Classify extends AppCompatActivity {
     // int array to hold image data
     private int[] intValues;
 
+    //Original Text
+    private String originalText;
+
+    //Translated Text
+    private String translatedText;
+
     // activity elements
     private ImageView selected_image;
     private Button classify_button;
-    private Button back_button;
+    //private Button back_button;
     private TextView label1;
+    com.google.cloud.translate.Translate translate;
+    private Button translate_button;
+    private TextView translate_text;
 
 
     // priority queue that will hold the top results from the CNN
@@ -138,14 +156,14 @@ public class Classify extends AppCompatActivity {
         topConfidence = new String[RESULTS_TO_SHOW];
 
         // allows user to go back to activity to select a different image
-        back_button = (Button)findViewById(R.id.back_button);
+        /*back_button = (Button)findViewById(R.id.back_button);
         back_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent i = new Intent(Classify.this, Model.class);
                 startActivity(i);
             }
-        });
+        });*/
 
         // classify current dispalyed image
         classify_button = (Button)findViewById(R.id.classify_image);
@@ -259,7 +277,70 @@ public class Classify extends AppCompatActivity {
         // set the corresponding textview with the results
         label1.setText(topLables[2]);
 
+        translate_button = findViewById(R.id.translate_button);
+        translate_text = findViewById(R.id.translate_text);
+
+        translate_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+               if(checkInternetConnection()){
+                   getTranslateService();
+                   translate();
+               }else{
+                   translate_text.setText(getResources().getString(R.string.no_connection));
+               }
+
+            }
+        });
+
+
     }
+
+    public void getTranslateService() {
+
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
+
+        try (InputStream is = getResources().openRawResource(R.raw.credentials)) {
+
+            //Get credentials:
+            final GoogleCredentials myCredentials = GoogleCredentials.fromStream(is);
+
+            //Set credentials and get translate service:
+            TranslateOptions translateOptions = TranslateOptions.newBuilder().setCredentials(myCredentials).build();
+            translate = translateOptions.getService();
+
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+
+        }
+    }
+
+    public void translate() {
+
+        //Get input text to be translated:
+        originalText = label1.getText().toString();
+        Translation translation = translate.translate(originalText, com.google.cloud.translate.Translate.TranslateOption.targetLanguage("es"), Translate.TranslateOption.model("base"));
+        translatedText = translation.getTranslatedText();
+
+        //Translated text and original text are set to TextViews:
+        translate_text.setText(translatedText);
+
+    }
+
+    public boolean checkInternetConnection() {
+
+        //Check internet connection:
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        //Means that we are connected to a network (mobile or wi-fi)
+        connected = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ||
+                connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState() == NetworkInfo.State.CONNECTED;
+
+        return connected;
+    }
+
+
 
 
     // resizes bitmap to given dimensions
