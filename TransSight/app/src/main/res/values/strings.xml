@@ -1,4 +1,10 @@
 <resources>
     <string name="app_name">TransSight</string>
     <string name="no_connection">No internet connection! Cannot be translated!</string>
+    <string-array name="languages_array">
+        <item>Spanish</item>
+        <item>Japanese</item>
+        <item>Chinese</item>
+
+    </string-array>
 </resources>

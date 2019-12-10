@@ -19,10 +19,15 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.MultiAutoCompleteTextView;
+import android.widget.Spinner;
+import android.widget.SpinnerAdapter;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.auth.oauth2.GoogleCredentials;
@@ -35,22 +40,28 @@ import java.io.IOException;
 import java.io.InputStream;
 
 
-public class HomeScreen extends AppCompatActivity {
+public class HomeScreen extends AppCompatActivity{
 
     // button for each available classifier
     private ImageButton transight_button;
+
+
     //Original Text
     private String originalText;
     //Translated Text
     private String translatedText;
 
+    private Spinner spinner;
+
     private EditText english_text;
 
-    private MultiAutoCompleteTextView translated_text;
+    private TextView translated_text;
 
     private Button translate_button;
 
     private boolean connected;
+
+    private String language;
 
     com.google.cloud.translate.Translate translate;
 
@@ -109,10 +120,69 @@ public class HomeScreen extends AppCompatActivity {
 
         translate_button = (Button)findViewById(R.id.translate_button);
         english_text = (EditText)findViewById(R.id.english_text);
-        translated_text = (MultiAutoCompleteTextView)findViewById(R.id.translated_text);
+        translated_text = (TextView)findViewById(R.id.translated_text);
+        spinner = (Spinner)findViewById(R.id.spinner);
+
+
+        ArrayAdapter<CharSequence> arrayAdapter = ArrayAdapter.createFromResource(this,R.array.languages_array,android.R.layout.simple_spinner_item);
+        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(arrayAdapter);
+
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+
+
+
+
+                   /* if (checkInternetConnection()) {
+
+                        //If there is internet connection, get translate service and start translation:
+                        getTranslateService();
+                        translate("es");
+                        if(i==0){
+                            translate("es");
+                        }else if(i==1){
+                            translate("jp");
+                        }else if(i==2){
+                            translate("zh-TW");
+                        }
+
+
+                    } else {
+
+                        //If not, display "no connection" warning:
+                        translated_text.setText(getResources().getString(R.string.no_connection));
+                    }
+
+
+
+                /*if(i==0){
+                    translate("es");
+                }else if(i==1){
+                    translate("jp");
+                }else if(i==2){
+                    translate("zh-TW");
+                }*/
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
+
+
+
+
+
         translate_button.setOnClickListener(new View.OnClickListener() {
+
              @Override
              public void onClick(View view) {
+
                  if (checkInternetConnection()) {
 
                      //If there is internet connection, get translate service and start translation:
@@ -129,6 +199,13 @@ public class HomeScreen extends AppCompatActivity {
 
 
     }
+
+
+
+
+
+
+
 
     public void getTranslateService() {
 
@@ -231,4 +308,6 @@ public class HomeScreen extends AppCompatActivity {
             startActivity(i);
         }
     }
+
+
 }

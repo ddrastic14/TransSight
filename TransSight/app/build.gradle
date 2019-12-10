@@ -41,15 +41,16 @@ dependencies {
     // TensorFlow lite dependency
     implementation 'org.tensorflow:tensorflow-lite:+'
 
-    //implementation 'com.google.firebase:firebase-analytics:17.2.1'
-    //implementation 'com.google.firebase:firebase-auth:19.1.0'
+    implementation 'com.google.firebase:firebase-analytics:17.2.1'
+    implementation 'com.google.firebase:firebase-auth:19.2.0'
 
 
     implementation('com.google.cloud:google-cloud-translate:1.12.0') {
         exclude group: 'org.apache.httpcomponents'
         exclude group: 'org.json', module: 'json'
+        exclude group: 'com.google.auto.value', module: 'auto-value'
     }
     annotationProcessor 'com.google.cloud:google-cloud-translate:1.12.0'
 
 }
-//apply plugin: 'com.google.gms.google-services'
+apply plugin: 'com.google.gms.google-services'
