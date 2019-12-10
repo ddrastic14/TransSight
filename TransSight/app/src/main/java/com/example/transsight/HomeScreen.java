@@ -57,7 +57,7 @@ public class HomeScreen extends AppCompatActivity{
 
     private TextView translated_text;
 
-    private Button translate_button;
+
 
     private boolean connected;
 
@@ -118,7 +118,7 @@ public class HomeScreen extends AppCompatActivity{
             }
         });
 
-        translate_button = (Button)findViewById(R.id.translate_button);
+
         english_text = (EditText)findViewById(R.id.english_text);
         translated_text = (TextView)findViewById(R.id.translated_text);
         spinner = (Spinner)findViewById(R.id.spinner);
@@ -132,44 +132,27 @@ public class HomeScreen extends AppCompatActivity{
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
 
-
-
-
-                   /* if (checkInternetConnection()) {
+                if (checkInternetConnection()) {
 
                         //If there is internet connection, get translate service and start translation:
                         getTranslateService();
-                        translate("es");
+
                         if(i==0){
                             translate("es");
                         }else if(i==1){
-                            translate("jp");
+                            translate("ja");
                         }else if(i==2){
                             translate("zh-TW");
                         }
-
-
-                    } else {
+                } else {
 
                         //If not, display "no connection" warning:
                         translated_text.setText(getResources().getString(R.string.no_connection));
                     }
-
-
-
-                /*if(i==0){
-                    translate("es");
-                }else if(i==1){
-                    translate("jp");
-                }else if(i==2){
-                    translate("zh-TW");
-                }*/
-
             }
-
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
-
+                   return;
             }
         });
 
@@ -178,24 +161,7 @@ public class HomeScreen extends AppCompatActivity{
 
 
 
-        translate_button.setOnClickListener(new View.OnClickListener() {
 
-             @Override
-             public void onClick(View view) {
-
-                 if (checkInternetConnection()) {
-
-                     //If there is internet connection, get translate service and start translation:
-                     getTranslateService();
-                     translate();
-
-                 } else {
-
-                     //If not, display "no connection" warning:
-                     translated_text.setText(getResources().getString(R.string.no_connection));
-                 }
-             }
-         });
 
 
     }
@@ -227,11 +193,11 @@ public class HomeScreen extends AppCompatActivity{
         }
     }
 
-    public void translate() {
+    public void translate(String language) {
 
         //Get input text to be translated:
         originalText = english_text.getText().toString();
-        Translation translation = translate.translate(originalText, com.google.cloud.translate.Translate.TranslateOption.targetLanguage("es"), com.google.cloud.translate.Translate.TranslateOption.model("base"));
+        Translation translation = translate.translate(originalText, com.google.cloud.translate.Translate.TranslateOption.targetLanguage(language), com.google.cloud.translate.Translate.TranslateOption.model("base"));
         translatedText = translation.getTranslatedText();
 
         //Translated text and original text are set to TextViews:

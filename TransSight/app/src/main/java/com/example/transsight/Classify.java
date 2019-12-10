@@ -13,8 +13,11 @@ import android.provider.MediaStore;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.google.auth.oauth2.GoogleCredentials;
@@ -85,12 +88,13 @@ public class Classify extends AppCompatActivity {
     private String translatedText;
 
     // activity elements
+    private Spinner spinner;
     private ImageView selected_image;
     private Button classify_button;
     //private Button back_button;
     private TextView label1;
     com.google.cloud.translate.Translate translate;
-    private Button translate_button;
+
     private TextView translate_text;
 
 
@@ -197,6 +201,9 @@ public class Classify extends AppCompatActivity {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+
+
     }
 
     // loads tflite grapg from file
@@ -277,21 +284,44 @@ public class Classify extends AppCompatActivity {
         // set the corresponding textview with the results
         label1.setText(topLables[2]);
 
-        translate_button = findViewById(R.id.translate_button);
+
+        spinner = (Spinner)findViewById(R.id.spinner);
+
+
+        ArrayAdapter<CharSequence> arrayAdapter = ArrayAdapter.createFromResource(this,R.array.languages_array,android.R.layout.simple_spinner_item);
+        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         translate_text = findViewById(R.id.translate_text);
+        spinner.setAdapter(arrayAdapter);
 
-        translate_button.setOnClickListener(new View.OnClickListener() {
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onClick(View view) {
-               if(checkInternetConnection()){
-                   getTranslateService();
-                   translate();
-               }else{
-                   translate_text.setText(getResources().getString(R.string.no_connection));
-               }
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
 
+                if (checkInternetConnection()) {
+
+                    //If there is internet connection, get translate service and start translation:
+                    getTranslateService();
+
+                    if(i==0){
+                        translate("es");
+                    }else if(i==1){
+                        translate("ja");
+                    }else if(i==2){
+                        translate("zh-TW");
+                    }
+                } else {
+
+                    //If not, display "no connection" warning:
+                    label1.setText(getResources().getString(R.string.no_connection));
+                }
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+                return;
             }
         });
+
+
 
 
     }
@@ -316,11 +346,11 @@ public class Classify extends AppCompatActivity {
         }
     }
 
-    public void translate() {
+    public void translate(String language) {
 
         //Get input text to be translated:
         originalText = label1.getText().toString();
-        Translation translation = translate.translate(originalText, com.google.cloud.translate.Translate.TranslateOption.targetLanguage("es"), Translate.TranslateOption.model("base"));
+        Translation translation = translate.translate(originalText, com.google.cloud.translate.Translate.TranslateOption.targetLanguage(language), Translate.TranslateOption.model("base"));
         translatedText = translation.getTranslatedText();
 
         //Translated text and original text are set to TextViews:
