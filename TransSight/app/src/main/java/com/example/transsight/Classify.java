@@ -91,10 +91,14 @@ public class Classify extends AppCompatActivity {
     private Spinner spinner;
     private ImageView selected_image;
     private Button classify_button;
-    //private Button back_button;
+
+    //Shows text of what object is
     private TextView label1;
+
+    //translate API library
     com.google.cloud.translate.Translate translate;
 
+    //TextView that shows translated text
     private TextView translate_text;
 
 
@@ -159,15 +163,7 @@ public class Classify extends AppCompatActivity {
         // initialize array to hold top probabilities
         topConfidence = new String[RESULTS_TO_SHOW];
 
-        // allows user to go back to activity to select a different image
-        /*back_button = (Button)findViewById(R.id.back_button);
-        back_button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent i = new Intent(Classify.this, Model.class);
-                startActivity(i);
-            }
-        });*/
+
 
         // classify current dispalyed image
         classify_button = (Button)findViewById(R.id.classify_image);
@@ -281,7 +277,7 @@ public class Classify extends AppCompatActivity {
             topConfidence[i] = String.format("%.0f%%",label.getValue()*100);
         }
 
-        // set the corresponding textview with the results
+        // set the corresponding textview with the results (textview to be translated)
         label1.setText(topLables[2]);
 
 
@@ -302,17 +298,32 @@ public class Classify extends AppCompatActivity {
                     //If there is internet connection, get translate service and start translation:
                     getTranslateService();
 
+                    //Depending on which element is selected from the spinner, that is the language that the classification of the image will be translated into
                     if(i==0){
-                        translate("es");
+                        translate("en");
                     }else if(i==1){
-                        translate("ja");
+                        translate("es");
                     }else if(i==2){
                         translate("zh-TW");
+                    }else if(i==3){
+                        translate("fr");
+                    }else if(i==4){
+                        translate("tl");
+                    }else if(i==5){
+                        translate("vi");
+                    }else if(i==6){
+                        translate("ko");
+                    }else if(i==7){
+                        translate("de");
+                    }else if(i==8){
+                        translate("ar");
+                    }else if(i==9){
+                        translate("ru");
                     }
                 } else {
 
                     //If not, display "no connection" warning:
-                    label1.setText(getResources().getString(R.string.no_connection));
+                    translate_text.setText(getResources().getString(R.string.no_connection));
                 }
             }
             @Override
@@ -326,6 +337,7 @@ public class Classify extends AppCompatActivity {
 
     }
 
+    //Calls upon translate API and gets necessary credentials
     public void getTranslateService() {
 
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
@@ -346,6 +358,7 @@ public class Classify extends AppCompatActivity {
         }
     }
 
+    //Takes in a string language code from the spinner and translates the textview based on that code
     public void translate(String language) {
 
         //Get input text to be translated:
@@ -358,6 +371,7 @@ public class Classify extends AppCompatActivity {
 
     }
 
+    //Checks if we have internet so that we can gain access to the translate API
     public boolean checkInternetConnection() {
 
         //Check internet connection:

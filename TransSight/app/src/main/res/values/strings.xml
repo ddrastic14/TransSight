@@ -1,10 +1,34 @@
 <resources>
     <string name="app_name">TransSight</string>
     <string name="no_connection">No internet connection! Cannot be translated!</string>
-    <string-array name="languages_array">
-        <item>Spanish</item>
-        <item>Japanese</item>
-        <item>Chinese</item>
 
+
+    <string name="logout">Logout</string>
+    <string name="e_mail_1">E-mail</string>
+    <string name="password_1">Password</string>
+    <string name="already_have_an_account_sign_in_here">Already have an account? Sign in here!</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="e_mail">E-mail</string>
+    <string name="password">Password</string>
+    <string name="not_registered_sign_up_here">Not registered? Sign up here!</string>
+    <string name="sign_in">Sign In</string>
+    <string name="classify">Classify!</string>
+    <string name="select_language">Select Language</string>
+    <string name="select_language_home">Select language</string>
+
+    <string-array name="languages_array">
+        <item>English</item>
+        <item>Spanish</item>
+        <item>Chinese</item>
+        <item>French</item>
+        <item>Tagalog</item>
+        <item>Vietnamese</item>
+        <item>Korean</item>
+        <item>German</item>
+        <item>Arabic</item>
+        <item>Russian</item>
     </string-array>
+
+
+
 </resources>

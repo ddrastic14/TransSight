@@ -35,6 +35,7 @@ import com.google.cloud.translate.TranslateOptions;
 import com.google.cloud.translate.Translation;
 import com.soundcloud.android.crop.Crop;
 
+import com.google.firebase.auth.FirebaseAuth;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -42,19 +43,29 @@ import java.io.InputStream;
 
 public class HomeScreen extends AppCompatActivity{
 
-    // button for each available classifier
+    // button that jumps to camera to classify image
     private ImageButton transight_button;
+
+    //button to logout
+    private Button logout_button;
+
+    //Firebase object
+    FirebaseAuth mFirebaseAuth;
 
 
     //Original Text
     private String originalText;
+
     //Translated Text
     private String translatedText;
 
+    //Spinner that holds languages
     private Spinner spinner;
 
+    //User text
     private EditText english_text;
 
+    //Translated text
     private TextView translated_text;
 
 
@@ -137,12 +148,27 @@ public class HomeScreen extends AppCompatActivity{
                         //If there is internet connection, get translate service and start translation:
                         getTranslateService();
 
+                        //Depending on which element the user selects, will be the language the user's text is translated to
                         if(i==0){
-                            translate("es");
+                            translate("en");
                         }else if(i==1){
-                            translate("ja");
+                            translate("es");
                         }else if(i==2){
                             translate("zh-TW");
+                        }else if(i==3){
+                            translate("fr");
+                        }else if(i==4){
+                            translate("tl");
+                        }else if(i==5){
+                            translate("vi");
+                        }else if(i==6){
+                            translate("ko");
+                        }else if(i==7){
+                            translate("de");
+                        }else if(i==8){
+                            translate("ar");
+                        }else if(i==9){
+                            translate("ru");
                         }
                 } else {
 
@@ -157,8 +183,17 @@ public class HomeScreen extends AppCompatActivity{
         });
 
 
+//Allows the user to logout and sign in with another account
+logout_button = (Button) findViewById(R.id.logout_button);
 
-
+        logout_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                FirebaseAuth.getInstance().signOut();
+                Intent intToMain = new Intent(HomeScreen.this, Login.class);
+                startActivity(intToMain);
+            }
+        });
 
 
 
@@ -172,7 +207,7 @@ public class HomeScreen extends AppCompatActivity{
 
 
 
-
+//Connects to translate API by fetching credentials
     public void getTranslateService() {
 
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
@@ -193,6 +228,7 @@ public class HomeScreen extends AppCompatActivity{
         }
     }
 
+    //Translates textview into language of choice
     public void translate(String language) {
 
         //Get input text to be translated:
@@ -204,7 +240,7 @@ public class HomeScreen extends AppCompatActivity{
         translated_text.setText(translatedText);
 
     }
-
+//Checks to see if we have internet so that we can connect to translate API
     public boolean checkInternetConnection() {
 
         //Check internet connection:
