@@ -9,13 +9,15 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="#95F7F7F4">
+
 
         <EditText
             android:id="@+id/english_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="28dp"
+            android:layout_marginStart="36dp"
             android:autofillHints=""
             android:ems="10"
             android:inputType="textPersonName"
@@ -23,7 +25,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.19" />
+            app:layout_constraintVertical_bias="0.447" />
 
         <ImageButton
             android:id="@+id/transight_button"
@@ -31,11 +33,11 @@
             android:layout_height="wrap_content"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.566"
             app:layout_constraintStart_toEndOf="@+id/english_text"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.188"
+            app:layout_constraintVertical_bias="0.451"
             app:srcCompat="@android:drawable/ic_menu_camera" />
-
 
         <TextView
             android:id="@+id/translated_text"
@@ -54,15 +56,15 @@
             app:layout_constraintBottom_toTopOf="@+id/translated_text"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/english_text"
-            app:layout_constraintVertical_bias="0.63" />
+            app:layout_constraintTop_toBottomOf="@+id/instructions" />
 
         <TextView
             android:id="@+id/instructions"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="44dp"
+            android:drawableRight="@drawable/ic_flag_black_24dp"
             android:text="@string/select_language_home"
-            app:layout_constraintBottom_toTopOf="@+id/spinner"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/english_text" />
@@ -71,11 +73,23 @@
             android:id="@+id/logout_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="68dp"
             android:text="@string/logout"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.498"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/translated_text" />
+
+        <ImageView
+            android:id="@+id/imageView3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/translate" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
